@@ -221,7 +221,7 @@ class RBT:
             while tree is not self.nil:
                 if tree.color is BLACK:
                     bh += 1
-                tree = tree.left
+                tree = tree.right
             return bh
 
     def get_nb(self,tree):
@@ -277,7 +277,6 @@ def main():
     print("bh =",rbt.get_bh(rbt.root))
     print("\n")
     rbt.inorder(rbt.root)
-    rbt.print(rbt.root,0)
     
     f.close()
     
