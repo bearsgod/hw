@@ -1,5 +1,5 @@
-RED = "red"
-BLACK = "black"
+RED = "R"
+BLACK = "B"
 
 class Stack:
     def __init__(self):
@@ -243,36 +243,47 @@ class RBT:
         else:
             if tree.left is not self.nil:
                 self.inorder(tree.left)
-            print(tree.val)
+            print(tree.val,tree.color)
             if tree.right is not self.nil:
                 self.inorder(tree.right)
 
 def main():
     rbt = RBT()
-    f = open("input.txt", 'r')
+    filename = input("write file name: ")
+    f = open("%s"%filename,'r', )
     lines = f.readlines()
     check = 0
 
     total = 0
+    insert = 0
+    deleted = 0
+    miss = 0
     
     for line in lines:
         n = int(line)
         if n > 0:
             In = Node(n)
             rbt.insert(In)
+            insert += 1
             total += 1
         elif n < 0:
             Out = abs(n)
             z = rbt.search(rbt.root,Out)
             if z is rbt.nil:
                 print("There is no",Out)
+                miss += 1
             else:
                 total -= 1
+                deleted += 1
                 rbt.delete(z)
         else: break
 
     print("\n")
+    print("filename =",filename)
     print("total =",total)
+    print("insert =",insert)
+    print("deleted =",deleted)
+    print("miss =",miss)
     print("nb =",rbt.get_nb(rbt.root))
     print("bh =",rbt.get_bh(rbt.root))
     print("\n")
