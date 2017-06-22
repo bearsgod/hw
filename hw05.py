@@ -12,6 +12,7 @@ class Stack:
         return self.items == []
 
 stk = Stack()
+stack = Stack()
 
 class Node:
     def __init__(self, newval):
@@ -21,6 +22,10 @@ class Node:
         self.p = None
         self.bf = None
         self.color = None
+
+class Nil:
+    def __init__(self):
+        self.val = 'NIL'
 
 class RBT:
     def __init__(self):
@@ -109,6 +114,11 @@ class RBT:
     def minimum(self,tree):
         while tree.left is not self.nil:
             tree = tree.left
+        return tree
+
+    def maximum(self,tree):
+        while tree.right is not self.nil:
+            tree = tree.right
         return tree
 
     def search(self, x, k):
@@ -246,49 +256,77 @@ class RBT:
             print(tree.val,tree.color)
             if tree.right is not self.nil:
                 self.inorder(tree.right)
+                
+    def inorderstk(self,tree):
+        if self is None:
+            return
+        else:
+            if tree.left is not self.nil:
+                self.inorderstk(tree.left)
+            stack.push(tree)
+            if tree.right is not self.nil:
+                self.inorderstk(tree.right)
+    
+    def preval(self,tree,x):
+        self.inorderstk(tree)
+        tree = stack.pop()
+        while not stack.is_empty() and tree.val >= x:
+            tree = stack.pop()
+        if stack.is_empty() and tree.val >= x:
+            return Nil()
+        else:
+            return tree
+
+    def nextval(self,tree,x):
+        self.inorderstk(tree)
+        tree = stack.pop()
+        if tree.val <= x:
+            return Nil()
+        while not stack.is_empty() and tree.val > x:
+            temptree = tree
+            tree = stack.pop()
+        if stack.is_empty() and tree.val > x:
+            return tree
+        else:
+            return temptree
+        
+        
 
 def main():
     rbt = RBT()
     filename = input("write file name: ")
-    f = open("%s"%filename,'r', )
+    f = open("%s"%filename,'r')
     lines = f.readlines()
-    check = 0
-
-    total = 0
-    insert = 0
-    deleted = 0
-    miss = 0
     
     for line in lines:
         n = int(line)
         if n > 0:
             In = Node(n)
             rbt.insert(In)
-            insert += 1
-            total += 1
         elif n < 0:
             Out = abs(n)
             z = rbt.search(rbt.root,Out)
             if z is rbt.nil:
-                print("There is no",Out)
-                miss += 1
+                return
             else:
-                total -= 1
-                deleted += 1
                 rbt.delete(z)
         else: break
+        
+    fs = open("search01.txt",'r')
+    slines = fs.readlines()
 
-    print("\n")
-    print("filename =",filename)
-    print("total =",total)
-    print("insert =",insert)
-    print("deleted =",deleted)
-    print("miss =",miss)
-    print("nb =",rbt.get_nb(rbt.root))
-    print("bh =",rbt.get_bh(rbt.root))
-    print("\n")
-    rbt.inorder(rbt.root)
-    
+    for line in slines:
+        ns = int(line)
+        if ns > 0:
+            zs = rbt.search(rbt.root,ns)
+            if zs is rbt.nil:
+                print(rbt.preval(rbt.root,ns).val,'NIL',rbt.nextval(rbt.root,ns).val)
+                print('\n')
+            else:
+                print(rbt.preval(rbt.root,ns).val,zs.val,rbt.nextval(rbt.root,ns).val)
+                print('\n')
+        else:
+            break
     f.close()
     
 main()
